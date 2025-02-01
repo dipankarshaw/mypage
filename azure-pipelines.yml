@@ -5,14 +5,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
--    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'AzureServiceConnection'
-    subscriptionId: 'your-subscription-id'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'AzureServiceConnection'  # Ensure this matches your service connection name
+    subscriptionId: 'your-subscription-id'  # Replace with your actual subscription ID
     action: 'Create Or Update Resource Group'
     resourceGroupName: 'myResourceGroup'
     location: 'East US'
     templateLocation: 'Linked artifact'
-    csmFile: 'azuredeploy.json'
-    csmParametersFile: 'azuredeploy.parameters.json'
-    overrideParameters: '-storageAccountName $(storageAccountName)'
+    csmFile: 'azuredeploy.json'  # Path to your ARM template
+    csmParametersFile: 'azuredeploy.parameters.json'  # Path to your parameters file
+    overrideParameters: '-storageAccountName $(storageAccountName)'  # Ensure this variable is defined in your pipeline or variable group
     deploymentMode: 'Incremental'
