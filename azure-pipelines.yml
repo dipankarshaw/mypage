@@ -1,0 +1,20 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '<Your Azure Service Connection>'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az deployment group create --resource-group <YourResourceGroup> --template-file azuredeploy.json --parameters vmName=<YourVMName> location=<YourLocation> adminUsername=<YourAdminUsername> adminPassword=<YourAdminPassword> nicName=<YourNICName>
+      
+      # Wait for the VM to be up and running
+      sleep 60
+      
+      # Check that the VM is running Linux
+      az vm run-command invoke -g <YourResourceGroup> -n <YourVMName> --command-id RunShellScript --scripts 'uname'
